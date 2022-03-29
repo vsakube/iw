@@ -106,15 +106,23 @@ bool filter(string filename, vector<string>& linesvec){
         return true;
 }
 
-void jsonize(vector<string>& linesvec){
+string jsonize(vector<string>& linesvec){
 
-	string MAC;
+	string MAC; string inf;
 	linesvec.insert(linesvec.begin(), "[");
 
 	for(auto& line:linesvec){
                if( has_MAC((line), MAC) == true ){
-                 line = string("{") + string("\"BSS\":" ) + string("\"") + string(MAC) + string("\"") + string(",");
+
+        	int start = line.find("(on ");
+        	int stop  = line.find(")");
+        	inf = line.substr(start+4,stop-start-4);
+
+                line = string("{") + string("\"BSS\":" ) + string("\"") + MAC + string("\"") + string(",");
+		line += string("\"interface\":") + string("\"") + inf + string("\"") + string(",");
+
 	       }
+
                if( (line).find("freq:") != std::string::npos ){
                  string freq= string(trim((line).substr(line.find(":")+1))) ;
                  line = string("\"freq\"") + string(":") + string("\"") + freq + string("\",");
@@ -169,7 +177,6 @@ void jsonize(vector<string>& linesvec){
 	int pos1 = 0;
 	int pos2 = 0;
 
-//	json = string("jkwnjdfiencfmk");
 	while(true){
 
 		pos1 = json.find(")}},", pos2);
@@ -183,14 +190,14 @@ void jsonize(vector<string>& linesvec){
 			json = json.erase(pos1+4, len);
 		}
 	}
-	cout << endl << json << endl;
+	return json;
 }
 
 
 int main(){
 	vector<string> linesvec;
 	filter("orig.txt", linesvec);
-	jsonize(linesvec);
+	cout << jsonize(linesvec) << endl;
 
 }
 
