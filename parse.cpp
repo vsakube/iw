@@ -157,9 +157,9 @@ void jsonize(vector<string>& linesvec){
 
 	linesvec.push_back("]");
 
+
+
 	string json;
-
-
 	for( auto line:linesvec){
 		json+=line;
 	}
@@ -167,23 +167,23 @@ void jsonize(vector<string>& linesvec){
 	string start, end;
 
 	int pos1 = 0;
-	int pos2 = 4;
+	int pos2 = 0;
 
-	while( (pos2!=std::string::npos) || (pos1!=std::string::npos)){
+//	json = string("jkwnjdfiencfmk");
+	while(true){
+
 		pos1 = json.find(")}},", pos2);
 		pos2 = json.find("{\"BSS\"", pos1);
- 		cout << "pos1 " << pos1 << "pos2 " << pos2 << endl;
-		if (pos2 - pos1 != 4){
-			cout << "len is: " << pos2-pos1 << endl;
-			json = json.erase(pos1+4,pos2-pos1);
+
+		if (  (pos1 == std::string::npos) || (pos2 == std::string::npos) ){
+			break;
+		}
+		else{
+			int len = pos2-pos1-4;
+			json = json.erase(pos1+4, len);
 		}
 	}
-	cout << json << endl;
-		
-
-
-
-
+	cout << endl << json << endl;
 }
 
 
