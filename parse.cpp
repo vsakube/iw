@@ -153,7 +153,36 @@ void jsonize(vector<string>& linesvec){
                       line = string("\"Capabilities\"") + string(":") + string("\"") + caps + string("}") + string("},");
 		}
 	}
+
+
 	linesvec.push_back("]");
+
+	string json;
+
+
+	for( auto line:linesvec){
+		json+=line;
+	}
+
+	string start, end;
+
+	int pos1 = 0;
+	int pos2 = 4;
+
+	while( (pos2!=std::string::npos) || (pos1!=std::string::npos)){
+		pos1 = json.find(")}},", pos2);
+		pos2 = json.find("{\"BSS\"", pos1);
+ 		cout << "pos1 " << pos1 << "pos2 " << pos2 << endl;
+		if (pos2 - pos1 != 4){
+			cout << "len is: " << pos2-pos1 << endl;
+			json = json.erase(pos1+4,pos2-pos1);
+		}
+	}
+	cout << json << endl;
+		
+
+
+
 
 }
 
@@ -162,34 +191,6 @@ int main(){
 	vector<string> linesvec;
 	filter("orig.txt", linesvec);
 	jsonize(linesvec);
-
-	vector<string>::iterator start, end;
-
-	bool if_erased=1;
-	while(true){
-		//cout << "while loop" << endl;
-		for(auto itr=linesvec.begin(); itr < linesvec.end();){
-		if_erased=0;
-			if((*itr).find(")}},") != std::string::npos ) {
-				start=itr;itr++;
-				for(auto itr2=itr; itr2 < linesvec.end();){
-					if((*itr2).find("\"BSS\"") != std::string::npos ) {
-						// cout <<"start: " << (*start) << endl;
-						// cout <<"end: " << (*itr2) << endl;
-						linesvec.erase(itr,itr2);
-						if_erased=1;
-					}
-				itr2++;
-				}
-			}
-		itr++;
-		}
-	if (if_erased==0) break;
-	}
-
-	for(auto line:linesvec){
-		cout << line << endl;
-	}
 
 }
 
